@@ -7,7 +7,8 @@ module Rsconn
     HOST = 'host.redshift.amazonaws.com'
     PORT = 5439
     DATABASE = 'dbname'
-    JDBC_URL = "jdbc:postgresql://#{HOST}:#{PORT}/#{DATABASE}"
+    OPTIONS = 'tcpKeepAlive=true'
+    JDBC_URL = "jdbc:postgresql://#{HOST}:#{PORT}/#{DATABASE}?#{OPTIONS}"
     MYSQL_URL = "jdbc:mysql://#{HOST}:#{PORT}/#{DATABASE}"
 
     describe '#new' do

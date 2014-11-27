@@ -6,7 +6,7 @@ module Rsconn
       @url = url
       @host = @url.split('//').last.split(':').first
       @port = @url.split(':').last.split('/').first.to_i
-      @database = @url.split('/').last
+      @database = @url.split('/').last.split('?').first
 
       db_type = @url.split(':')[1]
 
