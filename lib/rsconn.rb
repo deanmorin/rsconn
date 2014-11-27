@@ -5,7 +5,7 @@ module Rsconn
   class Redshift < Postgres
     attr_reader :query_group, :query_slot_count
 
-    def initialize(jdbc_url, user, password, options={})
+    def initialize(host, port, database, user, password, options={})
       super
       @query_group = options.fetch(:query_group, nil)
       @query_slot_count = options.fetch(:query_slot_count, nil)

@@ -14,15 +14,17 @@ module Rsconn
   class Postgres
     attr_reader :conn
 
-    def initialize(jdbc_url, user, password, options={})
-      fail_if_invalid_connection_credentials(jdbc_url, user, password)
+    def initialize(host, port, database, user, password, options={})
+      fail_if_invalid_connection_credentials(host, port, database, user, password)
 
+      @host = host
+      @port = port
+      @database = database
+      @user = user
+      @password = password
       @abort_on_error = options.fetch(:abort_on_error, true)
       @max_retries = options.fetch(:max_retries, 3)
       @quiet = options.fetch(:quiet, false)
-      @jdbc_url = JdbcUrl.new(jdbc_url)
-      @user = user
-      @password = password
       @error_occurred = false
       @retry_count = 0
 
@@ -94,18 +96,20 @@ module Rsconn
 
     private
 
-    def fail_if_invalid_connection_credentials(jdbc_url, user, password)
-      fail ArgumentError, 'jdbc_url needs to be a string' unless jdbc_url.is_a?(String)
+    def fail_if_invalid_connection_credentials(host, port, database, user, password)
+      fail ArgumentError, 'host needs to be a string' unless host.is_a?(String)
+      fail ArgumentError, 'database needs to be a string' unless database.is_a?(String)
       fail ArgumentError, 'user needs to be a string' unless user.is_a?(String)
       fail ArgumentError, 'password needs to be a string' unless password.is_a?(String)
+      fail ArgumentError, 'port needs to be a integer' unless port.to_s =~ /\A\d+\z/
     end
 
     def init_connection
       with_error_handling do
         @conn = PGconn.open(
-          :host => @jdbc_url.host,
-          :port => @jdbc_url.port,
-          :dbname => @jdbc_url.database,
+          :host => @host,
+          :port => @port,
+          :dbname => @database,
           :user => @user,
           :password => @password,
         )
