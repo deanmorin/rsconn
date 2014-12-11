@@ -1,6 +1,7 @@
 require 'pg'
 require 'rsconn/jdbc_url'
 require 'rsconn/logger'
+require 'rsconn/typecast_result'
 
 
 module Rsconn
