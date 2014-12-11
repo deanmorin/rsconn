@@ -1,3 +1,6 @@
+require 'bigdecimal'
+
+
 module Rsconn
   class TypecastResult
     attr_reader :result
