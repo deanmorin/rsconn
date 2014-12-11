@@ -37,6 +37,8 @@ module Rsconn
     end
 
     def typecast(type, value)
+      return nil if value.nil?
+
       case type
 
       when TYPE_BOOLEAN

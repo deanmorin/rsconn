@@ -58,7 +58,7 @@ module Rsconn
       end
     end
 
-    describe '#get_field_by_type' do
+    describe '#query' do
 
       it 'converts booleans correctly' do
         @db_conn.execute('CREATE TABLE test.tmp_test_table (tmp boolean)')
@@ -68,6 +68,15 @@ module Rsconn
 
         expect(rows[0]['tmp']).to be false
         expect(rows[1]['tmp']).to be true
+      end
+
+      it 'converts nulls correctly' do
+        @db_conn.execute('CREATE TABLE test.tmp_test_table (a timestamp, b timestamp)')
+        @db_conn.execute("INSERT INTO test.tmp_test_table VALUES ('1900-01-01')")
+        rows = @db_conn.query('SELECT * FROM test.tmp_test_table')
+        @db_conn.drop_table_if_exists('test.tmp_test_table')
+
+        expect(rows[0]['b']).to be_nil
       end
     end
   end
