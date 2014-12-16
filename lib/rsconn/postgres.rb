@@ -124,10 +124,10 @@ module Rsconn
       return_value
 
     rescue PG::Error => e
-      if recoverable_error?(e) && @retry_count < @max_retries
+      if recoverable_error?(e.message) && @retry_count < @max_retries
         @retry_count += 1
-        sleep_time = sleep_time_for_error(e)
-        log "Failed with recoverable error (#{e.class}): #{e}"
+        sleep_time = sleep_time_for_error(e.message)
+        log "Failed with recoverable error (#{e.class}): #{e.message}"
         log "Retry attempt #{@retry_count} will occur after #{sleep_time} seconds"
         sleep sleep_time
         retry
@@ -135,7 +135,7 @@ module Rsconn
       else
         @retry_count = 0
         @error_occurred = true
-        log "An error occurred (#{e.class}): #{e}"
+        log "An error occurred (#{e.class}): #{e.message}"
         log e.backtrace.join("\n")
 
         raise e if @abort_on_error

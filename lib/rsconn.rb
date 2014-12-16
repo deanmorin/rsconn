@@ -21,5 +21,19 @@ module Rsconn
     def set_query_slot_count(count)
       execute("SET wlm_query_slot_count TO #{count};")
     end
+
+    private
+
+    def recoverable_error?(err_msg)
+      !!(err_msg =~ /vacuum is running/i) || super
+    end
+
+    def sleep_time_for_error(err_msg)
+      if err_msg =~ /vacuum is running/i
+        300
+      else
+        super
+      end
+    end
   end
 end
