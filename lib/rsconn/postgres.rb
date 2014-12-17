@@ -40,6 +40,7 @@ module Rsconn
 
       log "\n#{sql}\n" unless quiet
       result = with_error_handling { @conn.exec(sql) }
+      return nil if @error_occurred
 
       cmd = result.cmd_status.split.first
       affected_rows = result.cmd_tuples
@@ -56,6 +57,8 @@ module Rsconn
 
       log "\n#{sql}\n" unless quiet
       result = with_error_handling { @conn.exec(sql) }
+      return nil if @error_occurred
+
       TypecastResult.new(result).result
     end
 
