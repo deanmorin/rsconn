@@ -26,6 +26,7 @@ module Rsconn
       @abort_on_error = options.fetch(:abort_on_error, true)
       @max_retries = options.fetch(:max_retries, 3)
       @quiet = options.fetch(:quiet, false)
+      @print_backtrace_for_all_errors = options.fetch(:print_backtrace_for_all_errors, false)
       @error_occurred = false
       @retry_count = 0
 
@@ -139,8 +140,10 @@ module Rsconn
         @retry_count = 0
         @error_occurred = true
         log "An error occurred (#{e.class}): #{e.message}"
-        log e.backtrace.join("\n")
 
+        if @print_backtrace_for_all_errors || !error_backtrace_is_not_helpful?(e.class)
+          log e.backtrace.join("\n")
+        end
         raise e if @abort_on_error
       end
     end
@@ -155,6 +158,15 @@ module Rsconn
 
     def sql_exception_class
       fail NotImplementedError, 'sql_exception_class'
+    end
+
+    def error_backtrace_is_not_helpful?(klass)
+      [
+        PG::DuplicateTable,
+        PG::FeatureNotSupported,
+        PG::InFailedSqlTransaction,
+        PG::InsufficientPrivilege,
+      ].include?(klass)
     end
 
     def remove_comments(sql)
