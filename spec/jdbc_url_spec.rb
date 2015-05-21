@@ -8,14 +8,23 @@ module Rsconn
     PORT = 5439
     DATABASE = 'dbname'
     OPTIONS = 'tcpKeepAlive=true'
-    JDBC_URL = "jdbc:postgresql://#{HOST}:#{PORT}/#{DATABASE}?#{OPTIONS}"
+    REDSHIFT_URL = "jdbc:redshift://#{HOST}:#{PORT}/#{DATABASE}?#{OPTIONS}"
+    POSTGRESQL_URL = "jdbc:postgresql://#{HOST}:#{PORT}/#{DATABASE}?#{OPTIONS}"
     MYSQL_URL = "jdbc:mysql://#{HOST}:#{PORT}/#{DATABASE}"
 
     describe '#new' do
 
-      context 'when a good url is given' do
-        subject { JdbcUrl.new(JDBC_URL) }
-        its(:url) { should eq(JDBC_URL) }
+      context 'when a redshift url is given' do
+        subject { JdbcUrl.new(REDSHIFT_URL) }
+        its(:url) { should eq(REDSHIFT_URL) }
+        its(:host) { should eq(HOST) }
+        its(:port) { should eq(PORT) }
+        its(:database) { should eq(DATABASE) }
+      end
+
+      context 'when a redshift url is given' do
+        subject { JdbcUrl.new(POSTGRESQL_URL) }
+        its(:url) { should eq(POSTGRESQL_URL) }
         its(:host) { should eq(HOST) }
         its(:port) { should eq(PORT) }
         its(:database) { should eq(DATABASE) }
