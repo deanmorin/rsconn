@@ -10,8 +10,8 @@ module Rsconn
 
       db_type = @url.split(':')[1]
 
-      if db_type != 'postgresql'
-        fail ArgumentError, 'Only works with a "postgresql" JDBC URL'
+      unless %w(redshift postgresql).include?(db_type)
+        fail ArgumentError, 'Only works with a "redshift" or "postgresql" JDBC URL'
       end
     end
   end
